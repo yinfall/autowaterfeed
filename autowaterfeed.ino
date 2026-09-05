@@ -63,13 +63,13 @@ String params = "["
   "'name':'ssid',"
   "'label':'WLAN SSID',"
   "'type':" + String(INPUTTEXT) + ","
-  "'default':'Starfield'"
+  "'default':''"
   "},"
   "{"
   "'name':'pwd',"
   "'label':'WLAN Password',"
   "'type':" + String(INPUTPASSWORD) + ","
-  "'default':'16673205824QWE'"
+  "'default':''"
   "},"
   "{"
   "'name':'timezone',"
@@ -258,17 +258,30 @@ void setup() {
   conf.registerOnSave(onConfigSaved);
   parseFeedConfig();
 
-  // WiFi 连接
-  WiFi.begin(conf.getString("ssid"), conf.getString("pwd"));
+  // 没有保存 WiFi 配置时，先开启开放热点供用户配置。
   WiFi.hostname(conf.getApName());
-  Serial.print("Connecting WiFi");
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
+  String wifiSsid = conf.getString("ssid");
+  String wifiPwd = conf.getString("pwd");
+  if (wifiSsid.length() == 0) {
+    WiFi.mode(WIFI_AP);
+    WiFi.softAP(conf.getApName());
+    Serial.println("WiFi is not configured");
+    Serial.print("Config AP: ");
+    Serial.println(conf.getApName());
+    Serial.print("Config IP = ");
+    Serial.println(WiFi.softAPIP());
+  } else {
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(wifiSsid, wifiPwd);
+    Serial.print("Connecting WiFi");
+    while (WiFi.status() != WL_CONNECTED) {
+      delay(500);
+      Serial.print(".");
+    }
+    Serial.println();
+    Serial.print("Connected, IP = ");
+    Serial.println(WiFi.localIP());
   }
-  Serial.println();
-  Serial.print("Connected, IP = ");
-  Serial.println(WiFi.localIP());
 
   // NTP 时间
   timeClient.begin();
