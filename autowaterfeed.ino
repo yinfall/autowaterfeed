@@ -276,7 +276,24 @@ void setup() {
     Serial.println(WiFi.softAPIP());
   } else {
     WiFi.mode(WIFI_STA);
-    WiFi.begin(wifiSsid, wifiPwd);
+    WiFi.setSleepMode(WIFI_NONE_SLEEP);
+    int networkCount = WiFi.scanNetworks();
+    int targetNetwork = -1;
+    for (int i = 0; i < networkCount; i++) {
+      if (WiFi.SSID(i) == wifiSsid) {
+        targetNetwork = i;
+        break;
+      }
+    }
+    if (targetNetwork >= 0) {
+      WiFi.begin(wifiSsid, wifiPwd, WiFi.channel(targetNetwork),
+                 WiFi.BSSID(targetNetwork), true);
+      Serial.print("Found WiFi, channel = ");
+      Serial.println(WiFi.channel(targetNetwork));
+    } else {
+      WiFi.begin(wifiSsid, wifiPwd);
+      Serial.println("Configured WiFi was not found during scan");
+    }
     Serial.print("Connecting WiFi");
     unsigned long wifiStart = millis();
     while (WiFi.status() != WL_CONNECTED && millis() - wifiStart < 15000) {
@@ -292,6 +309,8 @@ void setup() {
       Serial.println("WiFi connection timed out");
       Serial.print("WiFi status: ");
       Serial.println(WiFi.status());
+      Serial.println("WiFi diagnostics:");
+      WiFi.printDiag(Serial);
       WiFi.disconnect();
       WiFi.mode(WIFI_AP);
       WiFi.softAP(conf.getApName());
