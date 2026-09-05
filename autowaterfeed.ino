@@ -22,9 +22,8 @@
 #include <WebConfig.h>
 
 // ---------------- 硬件配置 ----------------
-// 继电器控制引脚（按实际接线修改）。
-// 建议避开 GPIO0/GPIO2（影响启动模式），常用：GPIO4(D2)、GPIO5(D1)、GPIO12(D6)、GPIO14(D5)
-#define RELAY_PIN 4
+// ESP-01S 继电器底座固定使用 GPIO 0 (IO0)
+#define RELAY_PIN 0
 // 常见继电器模块为低电平触发：LOW=吸合(出水)，HIGH=断开(停止)
 // 若你的模块是高电平触发，将下面两行对调
 #define RELAY_ON   LOW
