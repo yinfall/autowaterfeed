@@ -1,0 +1,11 @@
+{
+  "files.associations": {
+    "*.ino": "cpp"
+  },
+  "files.exclude": {
+    ".build": true
+  },
+  "search.exclude": {
+    ".build": true
+  }
+}

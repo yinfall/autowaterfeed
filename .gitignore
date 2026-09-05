@@ -1,0 +1,5 @@
+# arduino-cli 构建产物
+.build/
+
+# 旧版 Arduino IDE 构建产物
+build/
