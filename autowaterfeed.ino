@@ -274,13 +274,27 @@ void setup() {
     WiFi.mode(WIFI_STA);
     WiFi.begin(wifiSsid, wifiPwd);
     Serial.print("Connecting WiFi");
-    while (WiFi.status() != WL_CONNECTED) {
+    unsigned long wifiStart = millis();
+    while (WiFi.status() != WL_CONNECTED && millis() - wifiStart < 15000) {
       delay(500);
       Serial.print(".");
     }
-    Serial.println();
-    Serial.print("Connected, IP = ");
-    Serial.println(WiFi.localIP());
+    if (WiFi.status() == WL_CONNECTED) {
+      Serial.println();
+      Serial.print("Connected, IP = ");
+      Serial.println(WiFi.localIP());
+    } else {
+      Serial.println();
+      Serial.println("WiFi connection timed out");
+      WiFi.disconnect();
+      WiFi.mode(WIFI_AP);
+      WiFi.softAP(conf.getApName());
+      Serial.println("Config AP started");
+      Serial.print("Config AP: ");
+      Serial.println(conf.getApName());
+      Serial.print("Config IP = ");
+      Serial.println(WiFi.softAPIP());
+    }
   }
 
   // NTP 时间
