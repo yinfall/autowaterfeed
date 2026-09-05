@@ -262,6 +262,10 @@ void setup() {
   WiFi.hostname(conf.getApName());
   String wifiSsid = conf.getString("ssid");
   String wifiPwd = conf.getString("pwd");
+  Serial.print("Saved WiFi SSID: ");
+  Serial.println(wifiSsid);
+  Serial.print("Saved WiFi password length: ");
+  Serial.println(wifiPwd.length());
   if (wifiSsid.length() == 0) {
     WiFi.mode(WIFI_AP);
     WiFi.softAP(conf.getApName());
@@ -286,6 +290,8 @@ void setup() {
     } else {
       Serial.println();
       Serial.println("WiFi connection timed out");
+      Serial.print("WiFi status: ");
+      Serial.println(WiFi.status());
       WiFi.disconnect();
       WiFi.mode(WIFI_AP);
       WiFi.softAP(conf.getApName());
